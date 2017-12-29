@@ -15,6 +15,7 @@ import Suggestions from './Suggestions';
 import defaultSearchProviders from '../../data/defaultSearchProviders';
 import { selectEmojis } from '../../utils';
 import { getCurrentConnection } from '../../utils/serverConnect';
+import { getServerCurrency } from '../../data/cryptoCurrencies';
 
 export default class extends baseVw {
   constructor(options = {}) {
@@ -43,7 +44,7 @@ export default class extends baseVw {
         'toys',
       ];
 
-    // in the future the may be more possible types
+    // in the future there may be more possible types
     this.urlType = this.usingTor ? 'torlistings' : 'listings';
 
     this.sProvider = app.searchProviders[`default${this.torString}Provider`];
@@ -97,6 +98,9 @@ export default class extends baseVw {
     this.filters = _.omit(params, ['q', 'p', 'ps', 'sortBy', 'providerQ', 'network']);
     // if the nsfw filter is not set, use the value from settings
     this.filters.nsfw = this.filters.nsfw || String(app.settings.get('showNsfw'));
+    // if the currency filter is not set, use the user's currency
+    console.log(getServerCurrency())
+    this.filters.acceptedCurrencies = this.filters.acceptedCurrencies || getServerCurrency().code;
 
     this.processTerm(this.term);
   }
